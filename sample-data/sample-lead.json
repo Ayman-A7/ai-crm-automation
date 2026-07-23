@@ -1,0 +1,9 @@
+{
+  "name": "John Smith",
+  "email": "john@example.com",
+  "company": "Acme Inc.",
+  "phone": "+1-555-123-4567",
+  "budget": "$50000",
+  "source": "Website",
+  "message": "We need AI automation for our sales team."
+}

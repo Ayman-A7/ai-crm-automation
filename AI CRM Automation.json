@@ -1,0 +1,523 @@
+{
+  "name": "AI CRM Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-intake",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        160
+      ],
+      "id": "874effe5-5f40-4cb9-8018-0df27b50c57f",
+      "name": "Webhook",
+      "webhookId": "542823cb-8e15-4018-bb79-0c351a2439dc"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "06e45453-b64f-41b2-bbf7-ef3305f70eab",
+              "name": "Name",
+              "value": "={{ $json.body.name }}",
+              "type": "string"
+            },
+            {
+              "id": "ab657e2e-ee0d-45e1-b2fb-7fd03a002276",
+              "name": "Email",
+              "value": "={{ $json.body.email }}",
+              "type": "string"
+            },
+            {
+              "id": "e8a5dfd3-8ede-439f-b241-247d245fbaa5",
+              "name": "Company",
+              "value": "={{ $json.body.company }}",
+              "type": "string"
+            },
+            {
+              "id": "a98808c3-1eb2-4672-aaea-a571a67cd0d1",
+              "name": "Phone",
+              "value": "={{ $json.body.phone }}",
+              "type": "string"
+            },
+            {
+              "id": "dd13b168-f28e-4d2f-b863-2e27a7e28038",
+              "name": "Message",
+              "value": "={{ $json.body.message }}",
+              "type": "string"
+            },
+            {
+              "id": "98127038-b3ea-4c3b-91af-f8b44c81b49c",
+              "name": "Budget",
+              "value": "={{ $json.body.budget }}",
+              "type": "string"
+            },
+            {
+              "id": "be8b5d2e-6d3d-46e6-8792-daf01269f20c",
+              "name": "Source",
+              "value": "={{ $json.body.source }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        160
+      ],
+      "id": "9593e9a0-34bb-4fb4-a664-7f92aed10421",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "29d6f42a-f446-4b37-9902-4b929cc09e00",
+              "leftValue": "={{ $json.Name }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "b71fa4e4-3449-483c-afaa-5c5fa86ea8ec",
+              "leftValue": "={{ $json.Email }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        448,
+        160
+      ],
+      "id": "29476c89-9edb-4cd5-8b4c-ada33df4db0c",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an AI sales assistant.\n\nAnalyze the lead below.\n\nName: {{ $json.Name }}\nCompany: {{ $json.Company }}\nEmail: {{ $json.Email }}\nBudget: {{ $json.Budget }}\nMessage: {{ $json.Message }}\n\nReturn ONLY valid JSON.\n\n{\n  \"lead_score\": 0,\n  \"priority\": \"\",\n  \"industry\": \"\",\n  \"summary\": \"\",\n  \"recommended_action\": \"\"\n}",
+        "messages": {
+          "messageValues": []
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        672,
+        -96
+      ],
+      "id": "74920b26-2af5-457d-9fa0-ea2e28faa590",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "options": {
+          "temperature": 0.2
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        752,
+        128
+      ],
+      "id": "6544b8a4-98cd-45ad-998b-8d82d632b957",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "WrbY98auAVWVuuZ6",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $input.first().json.text;\n\nreturn [\n  {\n    json: JSON.parse(text)\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1024,
+        16
+      ],
+      "id": "002a4698-caad-4a7a-9879-b8c526c5f3bc",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "17f59299-06e5-4361-baf7-59adac74d19c",
+              "leftValue": "={{ $json.lead_score }}",
+              "rightValue": 80,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1248,
+        16
+      ],
+      "id": "28aed4f6-9900-46aa-88ae-7c02ec354792",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "errorMessage": "Name or Email can not be Empty"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        736,
+        304
+      ],
+      "id": "fb89dde3-1caa-44bf-9adc-53759c34a903",
+      "name": "Stop and Error"
+    },
+    {
+      "parameters": {
+        "authentication": "airtableOAuth2Api",
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appSUtXRFDm3Qi4GD",
+          "mode": "list",
+          "cachedResultName": "AI CRM LEAD",
+          "cachedResultUrl": "https://airtable.com/appSUtXRFDm3Qi4GD"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblnrgtnbyqw90Fqd",
+          "mode": "list",
+          "cachedResultName": "leads",
+          "cachedResultUrl": "https://airtable.com/appSUtXRFDm3Qi4GD/tblnrgtnbyqw90Fqd"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $('If').item.json.Name }}",
+            "Email": "={{ $('If').item.json.Email }}",
+            "Company": "={{ $('If').item.json.Company }}",
+            "Phone": "={{ $('If').item.json.Phone }}",
+            "Budget": "={{ Number($('If').item.json.Budget.replace(/[^0-9.]/g, '')) }}",
+            "Source": "={{ $('If').item.json.Source }}",
+            "Lead Score": "={{ Number($('Code in JavaScript').item.json.lead_score) }}",
+            "Priority": "={{ $('Code in JavaScript').item.json.priority }}",
+            "Summary": "={{ $('Code in JavaScript').item.json.summary }}",
+            "Recommended Action": "={{ $('Code in JavaScript').item.json.recommended_action }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Budget",
+              "displayName": "Budget",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Lead Score",
+              "displayName": "Lead Score",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Priority",
+              "displayName": "Priority",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Summary",
+              "displayName": "Summary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Recommended Action",
+              "displayName": "Recommended Action",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        1472,
+        112
+      ],
+      "id": "3b506885-9298-4fd1-b9d6-8a500dfa541a",
+      "name": "Create a record",
+      "credentials": {
+        "airtableOAuth2Api": {
+          "id": "HTKgdkMecNpgMRig",
+          "name": "Airtable account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "email": "={{ $('If').item.json.Email }}",
+        "additionalFields": {
+          "companyName": "={{ $('If').item.json.Company }}",
+          "firstName": "={{ $('If').item.json.Name }}",
+          "phoneNumber": "={{ $('If').item.json.Phone }}"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2.2,
+      "position": [
+        1472,
+        -80
+      ],
+      "id": "68e2ae51-21d8-41e7-9112-6fd04f2bfec3",
+      "name": "Create or update a contact",
+      "credentials": {
+        "hubspotOAuth2Api": {
+          "id": "obeyDESiqOVG1Wan",
+          "name": "HubSpot account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Create or update a contact",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create a record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "fab6c946-4bc4-4372-ac15-cd456d02c790",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4749ef1dff9dab97533d296fc60571d1f46847c4cabe69d94e1cae900f679a95"
+  },
+  "nodeGroups": [],
+  "id": "pWNmyza9i8kAVRiF",
+  "tags": []
+}
