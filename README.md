@@ -1,102 +1,201 @@
-# AI CRM Automation
+# 🚀 AI CRM Automation System
 
-An AI-powered CRM automation built with **n8n**, **Google Gemini**, **HubSpot CRM**, **Airtable**, and **Webhooks**.
+A production-ready CRM automation workflow built with **n8n**, **Airtable**, **Gmail**, and **Webhooks**.
 
-## Overview
-
-This workflow automatically receives website leads, validates the data, uses AI to qualify each lead, routes high-priority leads to HubSpot, and stores lower-priority leads in Airtable.
-
-## Features
-
-- Webhook-based lead intake
-- AI lead qualification using Google Gemini
-- Lead scoring
-- Conditional routing
-- HubSpot CRM integration
-- Airtable logging
-- API testing with Bruno
-
-## Workflow
-
-```
-Website Form
-      │
-      ▼
-Webhook
-      │
-      ▼
-Validate Lead
-      │
-      ▼
-Gemini AI
-      │
-      ▼
-Lead Score
-     / \
- High  Low
-  |      |
-HubSpot  Airtable
-```
-
-## Screenshots
-
-### Workflow Overview
-
-![Workflow Overview](screenshots/workflow.png)
+This workflow automatically manages customer contacts, prevents duplicate records, assigns sales representatives, creates follow-up tasks, sends welcome emails, and logs every workflow execution.
 
 ---
 
-### Webhook Test with Bruno
+## ✨ Features
 
-![Bruno Webhook Test](screenshots/bruno.png)
+- API Key Authentication
+- Webhook API
+- Input Validation
+- Contact Normalization
+- Automatic Contact ID Generation
+- Duplicate Contact Detection
+- Create or Update Contact
+- Sales Representative Assignment
+- Automatic Follow-up Task Creation
+- Welcome Email Automation
+- Activity Logging
+- Workflow Execution Logging
+- JSON API Response
 
 ---
 
-### AI Lead Qualification (Gemini)
-
-![Gemini Lead Analysis](screenshots/ai.png)
-
----
-
-### HubSpot Contact Created
-
-![HubSpot Contact](screenshots/hubspot.png)
-
----
-
-### Airtable Record
-
-![Airtable](screenshots/airtable.png)
-## Tech Stack
+## 🛠 Tech Stack
 
 - n8n
-- Google Gemini API
-- HubSpot CRM
 - Airtable
-- Bruno
+- Gmail
 - Webhooks
+- JavaScript
 
-## Business Problem
+---
 
-Sales teams often waste time reviewing every incoming lead manually.
+## 📊 Workflow
 
-This automation uses AI to analyze each lead, assign a score, and automatically route qualified leads into HubSpot while logging lower-priority leads to Airtable.
+```text
+Webhook
+    │
+Authenticate API
+    │
+Validate Request
+    │
+Normalize Contact
+    │
+Generate Contact ID
+    │
+Find Existing Contact
+    │
+Contact Exists?
+  ┌───────────────┐
+  │               │
+Create        Update
+Contact       Contact
+  └───────┬───────┘
+          │
+Assign Sales Representative
+          │
+Create Follow-up Task
+          │
+Log Activity
+          │
+Send Welcome Email
+          │
+Log Workflow Execution
+          │
+Respond to Webhook
+```
 
-## Skills Demonstrated
+---
 
-- AI Automation
-- CRM Automation
-- REST API Integration
-- Webhooks
-- Data Validation
-- Conditional Logic
-- JSON Data Handling
-- Prompt Engineering
+## 📥 Sample Request
 
-## Future Improvements
+```json
+{
+  "apiKey": "portfolio-demo-key",
+  "name": "John Smith",
+  "email": "john@acme.com",
+  "phone": "+1-555-123-4567",
+  "company": "Acme Inc.",
+  "industry": "Healthcare",
+  "source": "Website",
+  "message": "We are interested in CRM automation."
+}
+```
 
-- Slack notifications
-- Gmail follow-up emails
-- Duplicate lead detection
-- Multi-stage lead scoring
-- GoHighLevel integration
+---
+
+## 📤 Sample Response
+
+```json
+{
+  "success": true,
+  "contactId": "CRM-1785609560445",
+  "assignedTo": "Sarah Johnson",
+  "message": "Contact processed successfully."
+}
+```
+
+---
+
+## 🗂 Airtable Structure
+
+### Contacts
+
+- Contact ID
+- Name
+- Email
+- Phone
+- Company
+- Industry
+- Source
+- Status
+- Owner
+- Last Contact
+- Created At
+
+### Follow-up Tasks
+
+- Task ID
+- Contact ID
+- Task
+- Due Date
+- Assigned To
+- Status
+
+### Activity Log
+
+- Activity ID
+- Contact ID
+- Activity
+- Timestamp
+
+### Workflow Executions
+
+- Execution ID
+- Workflow
+- Status
+- Message
+- Timestamp
+
+---
+
+## 📸 Screenshots
+
+
+### Complete n8n workflow
+
+![Workflow](screenshots/workflow.png)
+
+### Contacts table
+
+![Airtable](screenshots/contacts.png)
+
+### Follow-up Tasks table
+
+![Airtable](screenshots/follow-up.png)
+
+### Activity Log
+
+![Airtable](screenshots/activity-log.png)
+
+### Successful webhook response
+
+![Bruno](screenshots/bruno.png)
+
+
+---
+
+## 🎥 Demo
+
+Suggested 60–90 second demo:
+
+1. Send a webhook request.
+2. Show duplicate detection.
+3. Show contact creation/update.
+4. Show sales rep assignment.
+5. Show follow-up task creation.
+6. Show welcome email.
+7. Show workflow execution log.
+
+---
+
+## 💼 Business Value
+
+This workflow helps sales teams by:
+
+- Eliminating duplicate contacts
+- Automating CRM updates
+- Assigning leads to the appropriate sales representative
+- Creating follow-up tasks automatically
+- Reducing manual administrative work
+- Maintaining a complete activity history
+
+---
+
+## 📄 License
+
+MIT
