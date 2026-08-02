@@ -3,19 +3,66 @@
   "nodes": [
     {
       "parameters": {
-        "httpMethod": "POST",
-        "path": "lead-intake",
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "9c78389c-a9ed-42c7-a8e6-bd952d8653c9",
+              "leftValue": "={{ $json.body.apiKey }}",
+              "rightValue": "portfolio-demo-key",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
         "options": {}
       },
-      "type": "n8n-nodes-base.webhook",
-      "typeVersion": 2.1,
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
       "position": [
-        0,
-        160
+        224,
+        288
       ],
-      "id": "874effe5-5f40-4cb9-8018-0df27b50c57f",
-      "name": "Webhook",
-      "webhookId": "542823cb-8e15-4018-bb79-0c351a2439dc"
+      "id": "951888a8-9a79-44ea-9c88-d51ca0b48afb",
+      "name": "02 - Authenticate API"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": false,\n  \"message\": \"Invalid API Key\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        448,
+        384
+      ],
+      "id": "548c07f2-131f-4f27-8c72-4ab7e907ff1c",
+      "name": "Invalid API"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": false,\n  \"message\": \"Missing required fields\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        672,
+        288
+      ],
+      "id": "3a9bf6cc-dae4-4c2d-bba9-07e72050a4db",
+      "name": "Invalid Inputs"
     },
     {
       "parameters": {
@@ -23,45 +70,57 @@
           "assignments": [
             {
               "id": "06e45453-b64f-41b2-bbf7-ef3305f70eab",
-              "name": "Name",
+              "name": "name",
               "value": "={{ $json.body.name }}",
               "type": "string"
             },
             {
               "id": "ab657e2e-ee0d-45e1-b2fb-7fd03a002276",
-              "name": "Email",
+              "name": "email",
               "value": "={{ $json.body.email }}",
               "type": "string"
             },
             {
               "id": "e8a5dfd3-8ede-439f-b241-247d245fbaa5",
-              "name": "Company",
+              "name": "company",
               "value": "={{ $json.body.company }}",
               "type": "string"
             },
             {
               "id": "a98808c3-1eb2-4672-aaea-a571a67cd0d1",
-              "name": "Phone",
+              "name": "phone",
               "value": "={{ $json.body.phone }}",
               "type": "string"
             },
             {
               "id": "dd13b168-f28e-4d2f-b863-2e27a7e28038",
-              "name": "Message",
+              "name": "message",
               "value": "={{ $json.body.message }}",
               "type": "string"
             },
             {
               "id": "98127038-b3ea-4c3b-91af-f8b44c81b49c",
-              "name": "Budget",
+              "name": "budget",
               "value": "={{ $json.body.budget }}",
               "type": "string"
             },
             {
               "id": "be8b5d2e-6d3d-46e6-8792-daf01269f20c",
-              "name": "Source",
+              "name": "source",
               "value": "={{ $json.body.source }}",
               "type": "string"
+            },
+            {
+              "id": "2c593faf-bbab-455c-ba98-d818feed2169",
+              "name": "industry",
+              "value": "={{ $json.body.industry }}",
+              "type": "string"
+            },
+            {
+              "id": "d1a46631-ae49-441a-a242-e57e38dc8bca",
+              "name": "employees",
+              "value": "={{ $json.body.employees }}",
+              "type": "number"
             }
           ]
         },
@@ -70,153 +129,11 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        224,
-        160
+        672,
+        96
       ],
       "id": "9593e9a0-34bb-4fb4-a664-7f92aed10421",
-      "name": "Edit Fields"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 3
-          },
-          "conditions": [
-            {
-              "id": "29d6f42a-f446-4b37-9902-4b929cc09e00",
-              "leftValue": "={{ $json.Name }}",
-              "rightValue": "",
-              "operator": {
-                "type": "string",
-                "operation": "notEmpty",
-                "singleValue": true
-              }
-            },
-            {
-              "id": "b71fa4e4-3449-483c-afaa-5c5fa86ea8ec",
-              "leftValue": "={{ $json.Email }}",
-              "rightValue": "",
-              "operator": {
-                "type": "string",
-                "operation": "notEmpty",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.3,
-      "position": [
-        448,
-        160
-      ],
-      "id": "29476c89-9edb-4cd5-8b4c-ada33df4db0c",
-      "name": "If"
-    },
-    {
-      "parameters": {
-        "promptType": "define",
-        "text": "=You are an AI sales assistant.\n\nAnalyze the lead below.\n\nName: {{ $json.Name }}\nCompany: {{ $json.Company }}\nEmail: {{ $json.Email }}\nBudget: {{ $json.Budget }}\nMessage: {{ $json.Message }}\n\nReturn ONLY valid JSON.\n\n{\n  \"lead_score\": 0,\n  \"priority\": \"\",\n  \"industry\": \"\",\n  \"summary\": \"\",\n  \"recommended_action\": \"\"\n}",
-        "messages": {
-          "messageValues": []
-        },
-        "batching": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.chainLlm",
-      "typeVersion": 1.9,
-      "position": [
-        672,
-        -96
-      ],
-      "id": "74920b26-2af5-457d-9fa0-ea2e28faa590",
-      "name": "Basic LLM Chain"
-    },
-    {
-      "parameters": {
-        "options": {
-          "temperature": 0.2
-        }
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
-      "typeVersion": 1.1,
-      "position": [
-        752,
-        128
-      ],
-      "id": "6544b8a4-98cd-45ad-998b-8d82d632b957",
-      "name": "Google Gemini Chat Model",
-      "credentials": {
-        "googlePalmApi": {
-          "id": "WrbY98auAVWVuuZ6",
-          "name": "Google Gemini(PaLM) Api account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "const text = $input.first().json.text;\n\nreturn [\n  {\n    json: JSON.parse(text)\n  }\n];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1024,
-        16
-      ],
-      "id": "002a4698-caad-4a7a-9879-b8c526c5f3bc",
-      "name": "Code in JavaScript"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 3
-          },
-          "conditions": [
-            {
-              "id": "17f59299-06e5-4361-baf7-59adac74d19c",
-              "leftValue": "={{ $json.lead_score }}",
-              "rightValue": 80,
-              "operator": {
-                "type": "number",
-                "operation": "gte"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.3,
-      "position": [
-        1248,
-        16
-      ],
-      "id": "28aed4f6-9900-46aa-88ae-7c02ec354792",
-      "name": "If1"
-    },
-    {
-      "parameters": {
-        "errorMessage": "Name or Email can not be Empty"
-      },
-      "type": "n8n-nodes-base.stopAndError",
-      "typeVersion": 1,
-      "position": [
-        736,
-        304
-      ],
-      "id": "fb89dde3-1caa-44bf-9adc-53759c34a903",
-      "name": "Stop and Error"
+      "name": "04 - Normalize Lead"
     },
     {
       "parameters": {
@@ -239,19 +156,28 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "Name": "={{ $('If').item.json.Name }}",
-            "Email": "={{ $('If').item.json.Email }}",
-            "Company": "={{ $('If').item.json.Company }}",
-            "Phone": "={{ $('If').item.json.Phone }}",
-            "Budget": "={{ Number($('If').item.json.Budget.replace(/[^0-9.]/g, '')) }}",
-            "Source": "={{ $('If').item.json.Source }}",
-            "Lead Score": "={{ Number($('Code in JavaScript').item.json.lead_score) }}",
-            "Priority": "={{ $('Code in JavaScript').item.json.priority }}",
-            "Summary": "={{ $('Code in JavaScript').item.json.summary }}",
-            "Recommended Action": "={{ $('Code in JavaScript').item.json.recommended_action }}"
+            "Email": "={{ $('05 - Generate Contact ID').item.json.email }}",
+            "Name": "={{ $('04 - Normalize Lead').item.json.name }}",
+            "Company": "={{ $('05 - Generate Contact ID').item.json.company }}",
+            "Phone": "={{ $('05 - Generate Contact ID').item.json.phone }}",
+            "Source": "={{ $('05 - Generate Contact ID').item.json.source }}",
+            "Contact ID": "={{ $json.fields['Contact ID'] }}",
+            "Owner": "={{ $json.fields.Owner }}",
+            "Last Contact": "={{ $json.fields['Last Contact'] }}"
           },
           "matchingColumns": [],
           "schema": [
+            {
+              "id": "Contact ID",
+              "displayName": "Contact ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
             {
               "id": "Name",
               "displayName": "Name",
@@ -297,13 +223,342 @@
               "removed": false
             },
             {
-              "id": "Budget",
-              "displayName": "Budget",
+              "id": "Source",
+              "displayName": "Source",
               "required": false,
               "defaultMatch": false,
               "canBeUsedToMatch": true,
               "display": true,
-              "type": "number",
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Owner",
+              "displayName": "Owner",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Last Contact",
+              "displayName": "Last Contact",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Created At",
+              "displayName": "Created At",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        1568,
+        96
+      ],
+      "id": "a9527e40-f7ff-4163-a8d0-45e862ca046a",
+      "name": "08A - Create Contact",
+      "credentials": {
+        "airtableOAuth2Api": {
+          "id": "HTKgdkMecNpgMRig",
+          "name": "Airtable account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "03dab7f1-a452-4572-9dce-526d961b1d32",
+              "leftValue": "={{ $('06 - Find Existing Contact').first()?.json?.id !== undefined }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1344,
+        96
+      ],
+      "id": "d764a43a-5b1b-4e16-a593-1b1a29eb9874",
+      "name": "07 - Contact Exists?"
+    },
+    {
+      "parameters": {
+        "authentication": "airtableOAuth2Api",
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appSUtXRFDm3Qi4GD",
+          "mode": "list",
+          "cachedResultName": "AI CRM LEAD",
+          "cachedResultUrl": "https://airtable.com/appSUtXRFDm3Qi4GD"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblnrgtnbyqw90Fqd",
+          "mode": "list",
+          "cachedResultName": "leads",
+          "cachedResultUrl": "https://airtable.com/appSUtXRFDm3Qi4GD/tblnrgtnbyqw90Fqd"
+        },
+        "filterByFormula": "={Email} = \"{{ $('04 - Normalize Lead').item.json.email }}\"",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        1120,
+        96
+      ],
+      "id": "917e019c-5b0d-4612-9823-b3281946b4ee",
+      "name": "06 - Find Existing Contact",
+      "alwaysOutputData": true,
+      "credentials": {
+        "airtableOAuth2Api": {
+          "id": "HTKgdkMecNpgMRig",
+          "name": "Airtable account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "06969eb3-7b89-4eba-a0b6-e3a96e6eed53",
+              "name": "leadId",
+              "value": "={{ \"CONTACT-\" + Date.now() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        896,
+        96
+      ],
+      "id": "c76db613-ed7d-4ade-b76f-b332e81af75d",
+      "name": "05 - Generate Contact ID"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "ec760317-12d3-4de9-86a4-8b86b35a4549",
+              "leftValue": "={{ $json.body.name }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "875830f0-36bd-4b45-9b1c-852a8e2d09d1",
+              "leftValue": "={{ $json.body.email }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "413f17e4-faae-4694-91ff-50373181eb26",
+              "leftValue": "={{ $json.body.company }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "16c079de-4712-4f35-8819-6dbe41e14a2b",
+              "leftValue": "={{ $json.body.message }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        448,
+        192
+      ],
+      "id": "77f60c4b-dc2c-4d88-b014-c08ed175b919",
+      "name": "03 - Validate Contact"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-intake",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        288
+      ],
+      "id": "874effe5-5f40-4cb9-8018-0df27b50c57f",
+      "name": "01 - Receive Contact(Webhook)",
+      "webhookId": "542823cb-8e15-4018-bb79-0c351a2439dc"
+    },
+    {
+      "parameters": {
+        "authentication": "airtableOAuth2Api",
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appSUtXRFDm3Qi4GD",
+          "mode": "list",
+          "cachedResultName": "AI CRM LEAD",
+          "cachedResultUrl": "https://airtable.com/appSUtXRFDm3Qi4GD"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblnrgtnbyqw90Fqd",
+          "mode": "list",
+          "cachedResultName": "leads",
+          "cachedResultUrl": "https://airtable.com/appSUtXRFDm3Qi4GD/tblnrgtnbyqw90Fqd"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.id }}",
+            "Email": "={{ $json.fields.Email }}",
+            "Company": "={{ $json.fields.Company }}",
+            "Name": "={{ $json.fields.Name }}",
+            "Phone": "={{ $json.fields.Phone }}",
+            "Source": "={{ $json.fields.Source }}",
+            "Contact ID": "={{ $('05 - Generate Contact ID').item.json.leadId }}",
+            "Last Contact": "={{ $('06 - Find Existing Contact').item.json.fields['Last Contact'] }}",
+            "Owner": "={{ $('06 - Find Existing Contact').item.json.fields.Owner }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Contact ID",
+              "displayName": "Contact ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
               "readOnly": false,
               "removed": false
             },
@@ -319,19 +574,8 @@
               "removed": false
             },
             {
-              "id": "Lead Score",
-              "displayName": "Lead Score",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "number",
-              "readOnly": false,
-              "removed": false
-            },
-            {
-              "id": "Priority",
-              "displayName": "Priority",
+              "id": "Owner",
+              "displayName": "Owner",
               "required": false,
               "defaultMatch": false,
               "canBeUsedToMatch": true,
@@ -341,8 +585,8 @@
               "removed": false
             },
             {
-              "id": "Summary",
-              "displayName": "Summary",
+              "id": "Last Contact",
+              "displayName": "Last Contact",
               "required": false,
               "defaultMatch": false,
               "canBeUsedToMatch": true,
@@ -352,13 +596,381 @@
               "removed": false
             },
             {
-              "id": "Recommended Action",
-              "displayName": "Recommended Action",
+              "id": "Created At",
+              "displayName": "Created At",
               "required": false,
               "defaultMatch": false,
               "canBeUsedToMatch": true,
               "display": true,
               "type": "string",
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        1568,
+        -96
+      ],
+      "id": "3e32f16c-a8f0-49ea-963a-921f137c8bfc",
+      "name": "08B - Update Contact",
+      "credentials": {
+        "airtableOAuth2Api": {
+          "id": "HTKgdkMecNpgMRig",
+          "name": "Airtable account 3"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1792,
+        96
+      ],
+      "id": "5b0d0fa7-fdc6-4d0d-8802-295c836f3ab4",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('04 - Normalize Lead').item.json.industry }}",
+                    "rightValue": "Healthcare",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "06c2a6a4-893d-4287-a531-b14f2d6a006f"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "2a7f34d6-fa91-4fc0-9297-8510afd0abc4",
+                    "leftValue": "={{ $('04 - Normalize Lead').item.json.industry }}",
+                    "rightValue": "Technology",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "8e854b6a-1aaa-4740-b817-cec60358cf7a",
+                    "leftValue": "={{ $('04 - Normalize Lead').item.json.industry }}",
+                    "rightValue": "Finance",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "2da726ca-9cee-4e07-b195-a2f77ac55136",
+                    "leftValue": "Default",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        2016,
+        64
+      ],
+      "id": "69da6bc6-5a81-40d9-a956-b9e653c5e66e",
+      "name": "09 - Assign Sales Representative"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "34f9dab7-4a52-4234-9c95-d6806ec6ec4d",
+              "name": "assignedTo",
+              "value": "Sarah Johnson",
+              "type": "string"
+            },
+            {
+              "id": "88b01292-e76b-40c1-8bb3-5fdc47e0bcc8",
+              "name": "team",
+              "value": "Healthcare",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2240,
+        -192
+      ],
+      "id": "c238f7a3-c42b-4945-81c1-fe487e2c2cc3",
+      "name": "10A - Assign Sarah"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "34f9dab7-4a52-4234-9c95-d6806ec6ec4d",
+              "name": "assignedTo",
+              "value": "Michael K",
+              "type": "string"
+            },
+            {
+              "id": "ba709764-40cb-45d7-af45-b94d6705dcff",
+              "name": "team",
+              "value": "Technology",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2240,
+        0
+      ],
+      "id": "b7eb867d-50de-4532-bc8f-09de29cc033a",
+      "name": "10B - Assign Michael"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "34f9dab7-4a52-4234-9c95-d6806ec6ec4d",
+              "name": "assignedTo",
+              "value": "Emily William",
+              "type": "string"
+            },
+            {
+              "id": "261cb57b-1552-4f1f-ada4-a63e343f14a6",
+              "name": "team",
+              "value": "Finance",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2240,
+        192
+      ],
+      "id": "fa4448ba-5128-486c-9463-8688fbdfb61b",
+      "name": "10C - Assign Emily"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "34f9dab7-4a52-4234-9c95-d6806ec6ec4d",
+              "name": "assignedTo",
+              "value": "Sales Queue",
+              "type": "string"
+            },
+            {
+              "id": "8f97d141-4b8f-4de9-bfbb-d73103c58705",
+              "name": "team",
+              "value": "General",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2240,
+        384
+      ],
+      "id": "b6e110a5-bd1a-40e8-ae25-d7f5da17eb7f",
+      "name": "10D - Assign Unassigned"
+    },
+    {
+      "parameters": {
+        "numberInputs": 4
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2464,
+        -32
+      ],
+      "id": "ad6d16a5-f012-4a99-9ade-f5d3426a0a89",
+      "name": "10 - Merge Assignment"
+    },
+    {
+      "parameters": {
+        "authentication": "airtableOAuth2Api",
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appSUtXRFDm3Qi4GD",
+          "mode": "list",
+          "cachedResultName": "AI CRM LEAD",
+          "cachedResultUrl": "https://airtable.com/appSUtXRFDm3Qi4GD"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblaAvnR0LIHYNoKi",
+          "mode": "list",
+          "cachedResultName": "Follow-up Tasks",
+          "cachedResultUrl": "https://airtable.com/appSUtXRFDm3Qi4GD/tblaAvnR0LIHYNoKi"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Task ID": "={{\"TASK-\"+Date.now()}}",
+            "Contact ID": "={{ $('05 - Generate Contact ID').item.json.leadId }}",
+            "Status": "Pending",
+            "Due Date": "={{ $now.plus({days: 1}).toFormat('yyyy-MM-dd') }}",
+            "Assigned To": "={{$json.assignedTo}}",
+            "Task": "Initial follow-up call"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Task ID",
+              "displayName": "Task ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Contact ID",
+              "displayName": "Contact ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Task",
+              "displayName": "Task",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Assigned To",
+              "displayName": "Assigned To",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Due Date",
+              "displayName": "Due Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
               "readOnly": false,
               "removed": false
             }
@@ -373,11 +985,11 @@
       "type": "n8n-nodes-base.airtable",
       "typeVersion": 2.2,
       "position": [
-        1472,
-        112
+        2688,
+        0
       ],
-      "id": "3b506885-9298-4fd1-b9d6-8a500dfa541a",
-      "name": "Create a record",
+      "id": "a103e2ea-bf11-4881-9d05-367c36e4814f",
+      "name": "11 - Create Follow-up Task",
       "credentials": {
         "airtableOAuth2Api": {
           "id": "HTKgdkMecNpgMRig",
@@ -387,118 +999,486 @@
     },
     {
       "parameters": {
-        "authentication": "oAuth2",
-        "email": "={{ $('If').item.json.Email }}",
-        "additionalFields": {
-          "companyName": "={{ $('If').item.json.Company }}",
-          "firstName": "={{ $('If').item.json.Name }}",
-          "phoneNumber": "={{ $('If').item.json.Phone }}"
+        "authentication": "airtableOAuth2Api",
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appSUtXRFDm3Qi4GD",
+          "mode": "list",
+          "cachedResultName": "AI CRM LEAD",
+          "cachedResultUrl": "https://airtable.com/appSUtXRFDm3Qi4GD"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblBOn7tCgljenXOz",
+          "mode": "list",
+          "cachedResultName": "Activity Log",
+          "cachedResultUrl": "https://airtable.com/appSUtXRFDm3Qi4GD/tblBOn7tCgljenXOz"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Activity ID": "={{\"ACT-\"+Date.now()}}={{\"ACT-\"+Date.now()}}",
+            "Contact ID": "={{ $('05 - Generate Contact ID').item.json.leadId }}",
+            "Activity": "=New contact processed and assigned to {{ $json.fields['Assigned To'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Activity ID",
+              "displayName": "Activity ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Contact ID",
+              "displayName": "Contact ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Activity",
+              "displayName": "Activity",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
         },
         "options": {}
       },
-      "type": "n8n-nodes-base.hubspot",
+      "type": "n8n-nodes-base.airtable",
       "typeVersion": 2.2,
       "position": [
-        1472,
-        -80
+        2912,
+        0
       ],
-      "id": "68e2ae51-21d8-41e7-9112-6fd04f2bfec3",
-      "name": "Create or update a contact",
+      "id": "691eecef-03b4-48d4-89d3-a78434a343db",
+      "name": "12 - Activity Log",
       "credentials": {
-        "hubspotOAuth2Api": {
-          "id": "obeyDESiqOVG1Wan",
-          "name": "HubSpot account"
+        "airtableOAuth2Api": {
+          "id": "HTKgdkMecNpgMRig",
+          "name": "Airtable account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('04 - Normalize Lead').item.json.email }}",
+        "subject": "Welcome to Our Company",
+        "message": "=Hi {{ $('04 - Normalize Lead').item.json.name }},\nThank you for contacting us.  Your request has been received and assigned to one of our sales representatives.  We'll contact you shortly.\nBest regards,\nSales Team",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        3136,
+        0
+      ],
+      "id": "e4c4230e-bdea-425c-aa82-78d81911ab1b",
+      "name": "13 - Send Welcome Email",
+      "webhookId": "c3b2f795-2908-4f50-9750-9add0866452d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "RTezo73wOPwIFqmL",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": true,\n  \"contactId\": \"{{ $('05 - Generate Contact ID').item.json.leadId }}\",\n  \"assignedTo\": \"{{$json.assignedTo}}\",\n  \"message\": \"Contact successfully processed.\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        3584,
+        0
+      ],
+      "id": "0e765705-1641-489d-be5a-a58e8dc13035",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "authentication": "airtableOAuth2Api",
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appSUtXRFDm3Qi4GD",
+          "mode": "list",
+          "cachedResultName": "AI CRM LEAD",
+          "cachedResultUrl": "https://airtable.com/appSUtXRFDm3Qi4GD"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl6GzUchtr7TJAVO",
+          "mode": "list",
+          "cachedResultName": "Workflow Executions",
+          "cachedResultUrl": "https://airtable.com/appSUtXRFDm3Qi4GD/tbl6GzUchtr7TJAVO"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Execution ID": "={{$execution.id}}",
+            "Workflow": "AI CRM Automation",
+            "Status": "Success",
+            "Message": "Workflow Executed"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Execution ID",
+              "displayName": "Execution ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Workflow",
+              "displayName": "Workflow",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Message",
+              "displayName": "Message",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        3360,
+        0
+      ],
+      "id": "ea9c0c9d-dcc8-405a-92f6-2a1e7200b2fb",
+      "name": "14 - Success Log",
+      "credentials": {
+        "airtableOAuth2Api": {
+          "id": "HTKgdkMecNpgMRig",
+          "name": "Airtable account 3"
         }
       }
     }
   ],
   "pinData": {},
   "connections": {
-    "Webhook": {
+    "02 - Authenticate API": {
       "main": [
         [
           {
-            "node": "Edit Fields",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields": {
-      "main": [
-        [
-          {
-            "node": "If",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If": {
-      "main": [
-        [
-          {
-            "node": "Basic LLM Chain",
+            "node": "03 - Validate Contact",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Stop and Error",
+            "node": "Invalid API",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Google Gemini Chat Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Basic LLM Chain",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Basic LLM Chain": {
+    "04 - Normalize Lead": {
       "main": [
         [
           {
-            "node": "Code in JavaScript",
+            "node": "05 - Generate Contact ID",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Code in JavaScript": {
+    "08A - Create Contact": {
       "main": [
         [
           {
-            "node": "If1",
+            "node": "Merge",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "If1": {
+    "07 - Contact Exists?": {
       "main": [
         [
           {
-            "node": "Create or update a contact",
+            "node": "08B - Update Contact",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Create a record",
+            "node": "08A - Create Contact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "06 - Find Existing Contact": {
+      "main": [
+        [
+          {
+            "node": "07 - Contact Exists?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "05 - Generate Contact ID": {
+      "main": [
+        [
+          {
+            "node": "06 - Find Existing Contact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "03 - Validate Contact": {
+      "main": [
+        [
+          {
+            "node": "04 - Normalize Lead",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Invalid Inputs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "01 - Receive Contact(Webhook)": {
+      "main": [
+        [
+          {
+            "node": "02 - Authenticate API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "08B - Update Contact": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "09 - Assign Sales Representative",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "09 - Assign Sales Representative": {
+      "main": [
+        [
+          {
+            "node": "10A - Assign Sarah",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "10B - Assign Michael",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "10C - Assign Emily",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "10D - Assign Unassigned",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "10D - Assign Unassigned": {
+      "main": [
+        [
+          {
+            "node": "10 - Merge Assignment",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "10A - Assign Sarah": {
+      "main": [
+        [
+          {
+            "node": "10 - Merge Assignment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "10B - Assign Michael": {
+      "main": [
+        [
+          {
+            "node": "10 - Merge Assignment",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "10C - Assign Emily": {
+      "main": [
+        [
+          {
+            "node": "10 - Merge Assignment",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "10 - Merge Assignment": {
+      "main": [
+        [
+          {
+            "node": "11 - Create Follow-up Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "11 - Create Follow-up Task": {
+      "main": [
+        [
+          {
+            "node": "12 - Activity Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "12 - Activity Log": {
+      "main": [
+        [
+          {
+            "node": "13 - Send Welcome Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "13 - Send Welcome Email": {
+      "main": [
+        [
+          {
+            "node": "14 - Success Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "14 - Success Log": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
             "type": "main",
             "index": 0
           }
@@ -512,7 +1492,7 @@
     "binaryMode": "separate",
     "availableInMCP": false
   },
-  "versionId": "fab6c946-4bc4-4372-ac15-cd456d02c790",
+  "versionId": "28487a1b-a06d-4747-823d-288c101aefb7",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "4749ef1dff9dab97533d296fc60571d1f46847c4cabe69d94e1cae900f679a95"
